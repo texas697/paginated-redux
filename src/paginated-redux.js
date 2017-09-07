@@ -71,7 +71,8 @@ const paginated = (
     NEXT_PAGE = 'NEXT_PAGE',
     PREV_PAGE = 'PREV_PAGE',
     FILTER = 'FILTER',
-    SORT = 'SORT'
+    SORT = 'SORT',
+    SET_CACHE = 'SET_CACHE'
   } = {},
   {
     defaultPage = 1,
@@ -108,88 +109,103 @@ const paginated = (
     // blocks without causing a duplicate declaration conflicts.
     switch (action.type) {
 
-    // Go to a specific page. Can be used to initialize the list into a certain
-    // page state.
-    case GOTO_PAGE:
-      return {
-        ...state,
-        page: action.page,
-        pageList: slicedList(action.page, per, cacheList)
-      };
+      // Go to a specific page. Can be used to initialize the list into a certain
+      // page state.
+      case GOTO_PAGE:
+        return {
+          ...state,
+          page: action.page,
+          pageList: slicedList(action.page, per, cacheList)
+        };
 
-    // If the the action is fired whilst at the end of the list, swing around
-    // back to the beginning.
-    case NEXT_PAGE:
-      let nextPage = page + 1;
-      if (nextPage > state.list.length - 1) nextPage = 0;
+      // If the the action is fired whilst at the end of the list, swing around
+      // back to the beginning.
+      case NEXT_PAGE:
+        let nextPage = page + 1;
+        if (nextPage > state.list.length - 1) nextPage = 0;
 
-      return {
-        ...state,
-        page: nextPage,
-        pageList: slicedList(nextPage, per, cacheList)
-      };
+        return {
+          ...state,
+          page: nextPage,
+          pageList: slicedList(nextPage, per, cacheList)
+        };
 
-    // If the action is fired whilst already at the beginning of the list,
-    // swing around to the end of the list (this behaviour can be handled
-    // differently through the UI if this is not the desired behaviour, for
-    // example, by simply not presenting the user with the "prev" button at
-    // all if already on the first page so it is not possible to wrap around).
-    case PREV_PAGE:
-      let prevPage = page - 1;
-      if (prevPage < 0) prevPage = state.list.length - 1;
+      // If the action is fired whilst already at the beginning of the list,
+      // swing around to the end of the list (this behaviour can be handled
+      // differently through the UI if this is not the desired behaviour, for
+      // example, by simply not presenting the user with the "prev" button at
+      // all if already on the first page so it is not possible to wrap around).
+      case PREV_PAGE:
+        let prevPage = page - 1;
+        if (prevPage < 0) prevPage = state.list.length - 1;
 
-      return {
-        ...state,
-        page: prevPage,
-        pageList: slicedList(prevPage, per, cacheList)
-      };
+        return {
+          ...state,
+          page: prevPage,
+          pageList: slicedList(prevPage, per, cacheList)
+        };
 
-    // Reset page to 1 as this existing page has lost its meaning due to the
-    // list changing form.
-    case FILTER: {
-      const newCache = sortedList(by, order, filteredList(action.filter, list));
+      // Reset page to 1 as this existing page has lost its meaning due to the
+      // list changing form.
+      case FILTER: {
+        const newCache = sortedList(by, order, filteredList(action.filter, list));
 
-      return {
-        ...state,
-        filter: action.filter,
-        cacheList: newCache,
-        pageList: slicedList(1, per, newCache)
-      };
+        return {
+          ...state,
+          filter: action.filter,
+          cacheList: newCache,
+          pageList: slicedList(1, per, newCache)
+        };
+      }
+
+      // There's a bit of optimization going on here. If the `by` hasn't changed
+      // (meaning the user clicked on the currently active column), then simply
+      // reverse the order of the cacheList (which is cheaper than running through
+      // the entire filter and sort functions). If the `by` has changed, *then*
+      // run the cacheList through the whole sort/filter combo to get a new list.
+      case SORT: {
+        const newOrder = action.by === by && order === 'asc' ? 'desc' : 'asc';
+        const newCache = action.by === by ?
+          reversedList(cacheList) :
+          sortedList(action.by, newOrder, filteredList(filter, list));
+
+        return {
+          ...state,
+          by: action.by,
+          order: newOrder,
+          cacheList: newCache,
+          pageList: slicedList(page, per, newCache)
+        };
+      }
+
+
+      case SET_CACHE: {
+        const newCache = sortedList(by, order, filteredList(action.filter, action.newCache));
+
+        return {
+          ...state,
+          list: newCache,
+          filter: action.filter,
+          cacheList: newCache,
+          pageList: slicedList(1, per, newCache),
+          total: totalPages(per, newCache)
+        };
+      }
+
+      // Setup the default list and cache and calculate the total.
+      default: {
+        const newList = reducer(state.list, action);
+        const newCache = sortedList(by, order, filteredList(filter, newList));
+
+        return {
+          ...state,
+          list: newList,
+          cacheList: newCache,
+          pageList: slicedList(page, per, cacheList),
+          total: totalPages(per, newCache)
+        };
+      }
     }
-
-    // There's a bit of optimization going on here. If the `by` hasn't changed
-    // (meaning the user clicked on the currently active column), then simply
-    // reverse the order of the cacheList (which is cheaper than running through
-    // the entire filter and sort functions). If the `by` has changed, *then*
-    // run the cacheList through the whole sort/filter combo to get a new list.
-    case SORT: {
-      const newOrder = action.by === by && order === 'asc' ? 'desc' : 'asc';
-      const newCache = action.by === by ?
-        reversedList(cacheList) :
-        sortedList(action.by, newOrder, filteredList(filter, list));
-
-      return {
-        ...state,
-        by: action.by,
-        order: newOrder,
-        cacheList: newCache,
-        pageList: slicedList(page, per, newCache)
-      };
-    }
-
-    // Setup the default list and cache and calculate the total.
-    default: {
-      const newList = reducer(state.list, action);
-      const newCache = sortedList(by, order, filteredList(filter, newList));
-
-      return {
-        ...state,
-        list: newList,
-        cacheList: newCache,
-        pageList: slicedList(page, per, cacheList),
-        total: totalPages(per, newCache)
-      };
-    }}
   };
 };
 

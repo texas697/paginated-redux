@@ -11,8 +11,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 // and compares all string properties to the value of the `filter` string,
 // returning only those which contain an exact match.
 var filteredList = function filteredList() {
-  var filter = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
-  var list = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+  var filter = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+  var list = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
   if (filter) {
     return list.filter(function (el) {
@@ -28,9 +28,9 @@ var filteredList = function filteredList() {
 // Return `list` sorted by `prop` in either ascending or decending order based
 // on the value of `order` (either 'asc' or 'desc').
 var sortedList = function sortedList() {
-  var prop = arguments.length <= 0 || arguments[0] === undefined ? 'name' : arguments[0];
-  var order = arguments.length <= 1 || arguments[1] === undefined ? 'asc' : arguments[1];
-  var list = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
+  var prop = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'name';
+  var order = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'asc';
+  var list = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
   return list.sort(function (compA, compB) {
     var a = compA;
@@ -57,8 +57,8 @@ var reversedList = function reversedList(list) {
 
 // Return the total number of pages that can be made from `list`.
 var totalPages = function totalPages() {
-  var per = arguments.length <= 0 || arguments[0] === undefined ? 10 : arguments[0];
-  var list = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+  var per = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
+  var list = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
   var total = Math.ceil(list.length / per);
 
@@ -68,9 +68,9 @@ var totalPages = function totalPages() {
 // Return a slice of all `list` starting at `start` up to `per`
 // (or the length of list; whichever comes first).
 var slicedList = function slicedList() {
-  var page = arguments.length <= 0 || arguments[0] === undefined ? 1 : arguments[0];
-  var per = arguments.length <= 1 || arguments[1] === undefined ? 10 : arguments[1];
-  var list = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
+  var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+  var per = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+  var list = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
   var start = (page - 1) * per;
   var end = per === 0 ? list.length : start + per;
@@ -83,33 +83,33 @@ var slicedList = function slicedList() {
 // 2. definitions of action types
 // 3. options
 var paginated = function paginated(reducer) {
-  var _ref = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+  var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+      _ref$GOTO_PAGE = _ref.GOTO_PAGE,
+      GOTO_PAGE = _ref$GOTO_PAGE === undefined ? 'GOTO_PAGE' : _ref$GOTO_PAGE,
+      _ref$NEXT_PAGE = _ref.NEXT_PAGE,
+      NEXT_PAGE = _ref$NEXT_PAGE === undefined ? 'NEXT_PAGE' : _ref$NEXT_PAGE,
+      _ref$PREV_PAGE = _ref.PREV_PAGE,
+      PREV_PAGE = _ref$PREV_PAGE === undefined ? 'PREV_PAGE' : _ref$PREV_PAGE,
+      _ref$FILTER = _ref.FILTER,
+      FILTER = _ref$FILTER === undefined ? 'FILTER' : _ref$FILTER,
+      _ref$SORT = _ref.SORT,
+      SORT = _ref$SORT === undefined ? 'SORT' : _ref$SORT,
+      _ref$SET_CACHE = _ref.SET_CACHE,
+      SET_CACHE = _ref$SET_CACHE === undefined ? 'SET_CACHE' : _ref$SET_CACHE;
 
-  var _ref$GOTO_PAGE = _ref.GOTO_PAGE;
-  var GOTO_PAGE = _ref$GOTO_PAGE === undefined ? 'GOTO_PAGE' : _ref$GOTO_PAGE;
-  var _ref$NEXT_PAGE = _ref.NEXT_PAGE;
-  var NEXT_PAGE = _ref$NEXT_PAGE === undefined ? 'NEXT_PAGE' : _ref$NEXT_PAGE;
-  var _ref$PREV_PAGE = _ref.PREV_PAGE;
-  var PREV_PAGE = _ref$PREV_PAGE === undefined ? 'PREV_PAGE' : _ref$PREV_PAGE;
-  var _ref$FILTER = _ref.FILTER;
-  var FILTER = _ref$FILTER === undefined ? 'FILTER' : _ref$FILTER;
-  var _ref$SORT = _ref.SORT;
-  var SORT = _ref$SORT === undefined ? 'SORT' : _ref$SORT;
-
-  var _ref2 = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
-
-  var _ref2$defaultPage = _ref2.defaultPage;
-  var defaultPage = _ref2$defaultPage === undefined ? 1 : _ref2$defaultPage;
-  var _ref2$defaultSortOrde = _ref2.defaultSortOrder;
-  var defaultSortOrder = _ref2$defaultSortOrde === undefined ? 'asc' : _ref2$defaultSortOrde;
-  var _ref2$defaultSortBy = _ref2.defaultSortBy;
-  var defaultSortBy = _ref2$defaultSortBy === undefined ? 'name' : _ref2$defaultSortBy;
-  var _ref2$defaultPer = _ref2.defaultPer;
-  var defaultPer = _ref2$defaultPer === undefined ? 10 : _ref2$defaultPer;
-  var _ref2$defaultFilter = _ref2.defaultFilter;
-  var defaultFilter = _ref2$defaultFilter === undefined ? '' : _ref2$defaultFilter;
-  var _ref2$defaultTotal = _ref2.defaultTotal;
-  var defaultTotal = _ref2$defaultTotal === undefined ? 0 : _ref2$defaultTotal;
+  var _ref2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
+      _ref2$defaultPage = _ref2.defaultPage,
+      defaultPage = _ref2$defaultPage === undefined ? 1 : _ref2$defaultPage,
+      _ref2$defaultSortOrde = _ref2.defaultSortOrder,
+      defaultSortOrder = _ref2$defaultSortOrde === undefined ? 'asc' : _ref2$defaultSortOrde,
+      _ref2$defaultSortBy = _ref2.defaultSortBy,
+      defaultSortBy = _ref2$defaultSortBy === undefined ? 'name' : _ref2$defaultSortBy,
+      _ref2$defaultPer = _ref2.defaultPer,
+      defaultPer = _ref2$defaultPer === undefined ? 10 : _ref2$defaultPer,
+      _ref2$defaultFilter = _ref2.defaultFilter,
+      defaultFilter = _ref2$defaultFilter === undefined ? '' : _ref2$defaultFilter,
+      _ref2$defaultTotal = _ref2.defaultTotal,
+      defaultTotal = _ref2$defaultTotal === undefined ? 0 : _ref2$defaultTotal;
 
   // NOTE: the reducer's array is named "list" at this point.
   // TODO: Is there a way to define the name of this property outside this module?
@@ -129,16 +129,16 @@ var paginated = function paginated(reducer) {
   };
 
   return function () {
-    var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
     var action = arguments[1];
-    var list = state.list;
-    var cacheList = state.cacheList;
-    var page = state.page;
-    var total = state.total;
-    var per = state.per;
-    var order = state.order;
-    var by = state.by;
-    var filter = state.filter;
+    var list = state.list,
+        cacheList = state.cacheList,
+        page = state.page,
+        total = state.total,
+        per = state.per,
+        order = state.order,
+        by = state.by,
+        filter = state.filter;
 
     // NOTE: I'm using blocks (i.e., statments wrapped in {}) for a few
     // conditions so that I can reuse the same variable const in different
@@ -210,19 +210,33 @@ var paginated = function paginated(reducer) {
           });
         }
 
+      case SET_CACHE:
+        {
+          var _newCache2 = sortedList(by, order, filteredList(action.filter, action.newCache));
+
+          return _extends({}, state, {
+            list: _newCache2,
+            filter: action.filter,
+            cacheList: _newCache2,
+            pageList: slicedList(1, per, _newCache2),
+            total: totalPages(per, _newCache2)
+          });
+        }
+
       // Setup the default list and cache and calculate the total.
       default:
         {
           var newList = reducer(state.list, action);
-          var _newCache2 = sortedList(by, order, filteredList(filter, newList));
+          var _newCache3 = sortedList(by, order, filteredList(filter, newList));
 
           return _extends({}, state, {
             list: newList,
-            cacheList: _newCache2,
+            cacheList: _newCache3,
             pageList: slicedList(page, per, cacheList),
-            total: totalPages(per, _newCache2)
+            total: totalPages(per, _newCache3)
           });
-        }}
+        }
+    }
   };
 };
 

@@ -1,11 +1,54 @@
 {
-  "name": "paginated-redux",
-  "version": "0.2.2",
-  "description": "A higher order reducer (or transducer) that adds pagination, sorting, and filtering to a reducer of an array of objects.",
-  "main": "dist/paginated-redux.js",
-  "scripts": {
-    "build": "node_modules/babel-cli/bin/babel.js ./src --out-dir ./dist",
-    "prepublish": "npm run build"
+  "_args": [
+    [
+      {
+        "raw": "paginated-redux@^0.2.2",
+        "scope": null,
+        "escapedName": "paginated-redux",
+        "name": "paginated-redux",
+        "rawSpec": "^0.2.2",
+        "spec": ">=0.2.2 <0.3.0",
+        "type": "range"
+      },
+      "/home/rsanchez/Development/Figgg"
+    ]
+  ],
+  "_from": "paginated-redux@>=0.2.2 <0.3.0",
+  "_id": "paginated-redux@0.2.2",
+  "_inCache": true,
+  "_location": "/paginated-redux",
+  "_nodeVersion": "5.11.1",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/paginated-redux-0.2.2.tgz_1464189180773_0.03196921804919839"
+  },
+  "_npmUser": {
+    "name": "robmclarty",
+    "email": "rob.mclarty@gmail.com"
+  },
+  "_npmVersion": "3.8.3",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "paginated-redux@^0.2.2",
+    "scope": null,
+    "escapedName": "paginated-redux",
+    "name": "paginated-redux",
+    "rawSpec": "^0.2.2",
+    "spec": ">=0.2.2 <0.3.0",
+    "type": "range"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/paginated-redux/-/paginated-redux-0.2.2.tgz",
+  "_shasum": "29981aded6c8184d69dabc8608f1d8b0873102ff",
+  "_shrinkwrap": null,
+  "_spec": "paginated-redux@^0.2.2",
+  "_where": "/home/rsanchez/Development/Figgg",
+  "author": {
+    "name": "Rob McLarty",
+    "email": "r@robmclarty.com",
+    "url": "robmclarty.com"
   },
   "babel": {
     "presets": [
@@ -15,10 +58,24 @@
       "transform-object-rest-spread"
     ]
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/robmclarty/paginated-redux.git"
+  "bugs": {
+    "url": "https://github.com/robmclarty/paginated-redux/issues"
   },
+  "dependencies": {},
+  "description": "A higher order reducer (or transducer) that adds pagination, sorting, and filtering to a reducer of an array of objects.",
+  "devDependencies": {
+    "babel-cli": "6.8.0",
+    "babel-core": "6.8.0",
+    "babel-plugin-transform-object-rest-spread": "6.8.0",
+    "babel-preset-es2015": "6.6.0"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "29981aded6c8184d69dabc8608f1d8b0873102ff",
+    "tarball": "https://registry.npmjs.org/paginated-redux/-/paginated-redux-0.2.2.tgz"
+  },
+  "gitHead": "d0cf643e0c1d2a2bf700f449a4c4016b4b238ed8",
+  "homepage": "https://github.com/robmclarty/paginated-redux#readme",
   "keywords": [
     "redux",
     "reducer",
@@ -29,16 +86,24 @@
     "page",
     "array"
   ],
-  "author": "Rob McLarty <r@robmclarty.com> (robmclarty.com)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/robmclarty/paginated-redux/issues"
+  "main": "dist/paginated-redux.js",
+  "maintainers": [
+    {
+      "name": "robmclarty",
+      "email": "rob.mclarty@gmail.com"
+    }
+  ],
+  "name": "paginated-redux",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robmclarty/paginated-redux.git"
   },
-  "homepage": "https://github.com/robmclarty/paginated-redux#readme",
-  "devDependencies": {
-    "babel-cli": "6.8.0",
-    "babel-core": "6.8.0",
-    "babel-plugin-transform-object-rest-spread": "6.8.0",
-    "babel-preset-es2015": "6.6.0"
-  }
+  "scripts": {
+    "build": "node_modules/babel-cli/bin/babel.js ./src --out-dir ./dist",
+    "prepublish": "npm run build"
+  },
+  "version": "0.2.2"
 }
