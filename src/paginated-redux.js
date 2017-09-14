@@ -1,10 +1,8 @@
-
-import Immutable from 'immutable'
 // Return a new array, a subset of `list`, which matches `filter`. Assumes an
 // array of objects and cyclers through each object, and looks at each property,
 // and compares all string properties to the value of the `filter` string,
 // returning only those which contain an exact match.
-const filteredList = (filter = '', list = Immutable.List([])) => {
+const filteredList = (filter = '', list = []) => {
   if (filter) {
     return list.filter((el) => {
       return Object.keys(el).some((prop) => {
@@ -20,7 +18,7 @@ const filteredList = (filter = '', list = Immutable.List([])) => {
 
 // Return `list` sorted by `prop` in either ascending or decending order based
 // on the value of `order` (either 'asc' or 'desc').
-const sortedList = (prop = 'name', order = 'asc', list = Immutable.List([])) => {
+const sortedList = (prop = 'name', order = 'asc', list = []) => {
   return list.sort((compA, compB) => {
     let a = compA;
     let b = compB;
@@ -45,19 +43,19 @@ const reversedList = list => {
 }
 
 // Return the total number of pages that can be made from `list`.
-const totalPages = (per = 10, list = Immutable.List([])) => {
-  const total = Math.ceil(list.size / per);
+const totalPages = (per = 10, list = []) => {
+  const total = Math.ceil(list.length / per);
 
   return total ? total : 0;
 };
 
 // Return a slice of all `list` starting at `start` up to `per`
 // (or the length of list; whichever comes first).
-const slicedList = (page = 1, per = 10, list = Immutable.List([])) => {
+const slicedList = (page = 1, per = 10, list = []) => {
   const start = (page - 1) * per;
-  const end = per === 0 ? list.size : start + per;
+  const end = per === 0 ? list.length : start + per;
 
-  return end === list.size ?
+  return end === list.length ?
     list.slice(start) :
     list.slice(start, end);
 };
@@ -90,17 +88,18 @@ const paginated = (
   // NOTE: cacheList is a temporary cached array of sorted + filtered elements
   // from the total list so that it doesn't need to be re-calculated each time
   // the pagedList function is called.
-  const initialState = Immutable.Map({
+  const initialState = {
     list: reducer(undefined, {}),
-    pageList: Immutable.fromJS([]),
-    cacheList: Immutable.fromJS(sortedList(defaultSortBy, defaultSortOrder, filteredList(defaultFilter, reducer(undefined, {})))),
+    pageList: [],
+    cacheList: sortedList(defaultSortBy, defaultSortOrder,
+      filteredList(defaultFilter, reducer(undefined, {}))),
     page: defaultPage,
     total: defaultTotal,
     per: defaultPer,
     order: defaultSortOrder,
     by: defaultSortBy,
     filter: defaultFilter
-  });
+  };
 
   return (state = initialState, action) => {
     const { list, cacheList, page, total, per, order, by, filter } = state;
@@ -116,7 +115,7 @@ const paginated = (
         return {
           ...state,
           page: action.page,
-          pageList: Immutable.fromJS(slicedList(action.page, per, cacheList))
+          pageList: slicedList(action.page, per, cacheList)
         };
 
       // If the the action is fired whilst at the end of the list, swing around
@@ -128,7 +127,7 @@ const paginated = (
         return {
           ...state,
           page: nextPage,
-          pageList: Immutable.fromJS(slicedList(nextPage, per, cacheList))
+          pageList: slicedList(nextPage, per, cacheList)
         };
 
       // If the action is fired whilst already at the beginning of the list,
@@ -143,7 +142,7 @@ const paginated = (
         return {
           ...state,
           page: prevPage,
-          pageList: Immutable.fromJS(slicedList(prevPage, per, cacheList))
+          pageList: slicedList(prevPage, per, cacheList)
         };
 
       // Reset page to 1 as this existing page has lost its meaning due to the
@@ -154,8 +153,8 @@ const paginated = (
         return {
           ...state,
           filter: action.filter,
-          cacheList: Immutable.fromJS(newCache),
-          pageList: Immutable.fromJS(slicedList(1, per, newCache))
+          cacheList: newCache,
+          pageList: slicedList(1, per, newCache)
         };
       }
 
@@ -174,8 +173,8 @@ const paginated = (
           ...state,
           by: action.by,
           order: newOrder,
-          cacheList:Immutable.fromJS( newCache),
-          pageList: Immutable.fromJS(slicedList(page, per, newCache))
+          cacheList: newCache,
+          pageList: slicedList(page, per, newCache)
         };
       }
 
@@ -185,10 +184,10 @@ const paginated = (
 
         return {
           ...state,
-          list: Immutable.fromJS(newCache),
+          list: newCache,
           filter: action.filter,
-          cacheList: Immutable.fromJS(newCache),
-          pageList: Immutable.fromJS(slicedList(1, per, newCache)),
+          cacheList: newCache,
+          pageList: slicedList(1, per, newCache),
           total: totalPages(per, newCache)
         };
       }
@@ -200,9 +199,9 @@ const paginated = (
 
         return {
           ...state,
-          list: Immutable.fromJS(newList),
-          cacheList: Immutable.fromJS(newCache),
-          pageList: Immutable.fromJS(slicedList(page, per, cacheList)),
+          list: newList,
+          cacheList: newCache,
+          pageList: slicedList(page, per, cacheList),
           total: totalPages(per, newCache)
         };
       }

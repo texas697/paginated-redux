@@ -6,19 +6,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _immutable = require('immutable');
-
-var _immutable2 = _interopRequireDefault(_immutable);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 // Return a new array, a subset of `list`, which matches `filter`. Assumes an
 // array of objects and cyclers through each object, and looks at each property,
 // and compares all string properties to the value of the `filter` string,
 // returning only those which contain an exact match.
 var filteredList = function filteredList() {
   var filter = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-  var list = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _immutable2.default.List([]);
+  var list = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
   if (filter) {
     return list.filter(function (el) {
@@ -36,7 +30,7 @@ var filteredList = function filteredList() {
 var sortedList = function sortedList() {
   var prop = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'name';
   var order = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'asc';
-  var list = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _immutable2.default.List([]);
+  var list = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
   return list.sort(function (compA, compB) {
     var a = compA;
@@ -64,9 +58,9 @@ var reversedList = function reversedList(list) {
 // Return the total number of pages that can be made from `list`.
 var totalPages = function totalPages() {
   var per = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
-  var list = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _immutable2.default.List([]);
+  var list = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
-  var total = Math.ceil(list.size / per);
+  var total = Math.ceil(list.length / per);
 
   return total ? total : 0;
 };
@@ -76,12 +70,12 @@ var totalPages = function totalPages() {
 var slicedList = function slicedList() {
   var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
   var per = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
-  var list = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _immutable2.default.List([]);
+  var list = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
   var start = (page - 1) * per;
-  var end = per === 0 ? list.size : start + per;
+  var end = per === 0 ? list.length : start + per;
 
-  return end === list.size ? list.slice(start) : list.slice(start, end);
+  return end === list.length ? list.slice(start) : list.slice(start, end);
 };
 
 // params:
@@ -122,17 +116,17 @@ var paginated = function paginated(reducer) {
   // NOTE: cacheList is a temporary cached array of sorted + filtered elements
   // from the total list so that it doesn't need to be re-calculated each time
   // the pagedList function is called.
-  var initialState = _immutable2.default.Map({
+  var initialState = {
     list: reducer(undefined, {}),
-    pageList: _immutable2.default.fromJS([]),
-    cacheList: _immutable2.default.fromJS(sortedList(defaultSortBy, defaultSortOrder, filteredList(defaultFilter, reducer(undefined, {})))),
+    pageList: [],
+    cacheList: sortedList(defaultSortBy, defaultSortOrder, filteredList(defaultFilter, reducer(undefined, {}))),
     page: defaultPage,
     total: defaultTotal,
     per: defaultPer,
     order: defaultSortOrder,
     by: defaultSortBy,
     filter: defaultFilter
-  });
+  };
 
   return function () {
     var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -157,7 +151,7 @@ var paginated = function paginated(reducer) {
       case GOTO_PAGE:
         return _extends({}, state, {
           page: action.page,
-          pageList: _immutable2.default.fromJS(slicedList(action.page, per, cacheList))
+          pageList: slicedList(action.page, per, cacheList)
         });
 
       // If the the action is fired whilst at the end of the list, swing around
@@ -168,7 +162,7 @@ var paginated = function paginated(reducer) {
 
         return _extends({}, state, {
           page: nextPage,
-          pageList: _immutable2.default.fromJS(slicedList(nextPage, per, cacheList))
+          pageList: slicedList(nextPage, per, cacheList)
         });
 
       // If the action is fired whilst already at the beginning of the list,
@@ -182,7 +176,7 @@ var paginated = function paginated(reducer) {
 
         return _extends({}, state, {
           page: prevPage,
-          pageList: _immutable2.default.fromJS(slicedList(prevPage, per, cacheList))
+          pageList: slicedList(prevPage, per, cacheList)
         });
 
       // Reset page to 1 as this existing page has lost its meaning due to the
@@ -193,8 +187,8 @@ var paginated = function paginated(reducer) {
 
           return _extends({}, state, {
             filter: action.filter,
-            cacheList: _immutable2.default.fromJS(newCache),
-            pageList: _immutable2.default.fromJS(slicedList(1, per, newCache))
+            cacheList: newCache,
+            pageList: slicedList(1, per, newCache)
           });
         }
 
@@ -211,8 +205,8 @@ var paginated = function paginated(reducer) {
           return _extends({}, state, {
             by: action.by,
             order: newOrder,
-            cacheList: _immutable2.default.fromJS(_newCache),
-            pageList: _immutable2.default.fromJS(slicedList(page, per, _newCache))
+            cacheList: _newCache,
+            pageList: slicedList(page, per, _newCache)
           });
         }
 
@@ -221,10 +215,10 @@ var paginated = function paginated(reducer) {
           var _newCache2 = sortedList(by, order, filteredList(action.filter, action.newCache));
 
           return _extends({}, state, {
-            list: _immutable2.default.fromJS(_newCache2),
+            list: _newCache2,
             filter: action.filter,
-            cacheList: _immutable2.default.fromJS(_newCache2),
-            pageList: _immutable2.default.fromJS(slicedList(1, per, _newCache2)),
+            cacheList: _newCache2,
+            pageList: slicedList(1, per, _newCache2),
             total: totalPages(per, _newCache2)
           });
         }
@@ -236,9 +230,9 @@ var paginated = function paginated(reducer) {
           var _newCache3 = sortedList(by, order, filteredList(filter, newList));
 
           return _extends({}, state, {
-            list: _immutable2.default.fromJS(newList),
-            cacheList: _immutable2.default.fromJS(_newCache3),
-            pageList: _immutable2.default.fromJS(slicedList(page, per, cacheList)),
+            list: newList,
+            cacheList: _newCache3,
+            pageList: slicedList(page, per, cacheList),
             total: totalPages(per, _newCache3)
           });
         }
