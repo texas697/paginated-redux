@@ -116,7 +116,7 @@ const paginated = (
         return {
           ...state,
           page: action.page,
-          pageList: slicedList(action.page, per, cacheList)
+          pageList: Immutable.fromJS(slicedList(action.page, per, cacheList))
         };
 
       // If the the action is fired whilst at the end of the list, swing around
@@ -128,7 +128,7 @@ const paginated = (
         return {
           ...state,
           page: nextPage,
-          pageList: slicedList(nextPage, per, cacheList)
+          pageList: Immutable.fromJS(slicedList(nextPage, per, cacheList))
         };
 
       // If the action is fired whilst already at the beginning of the list,
@@ -143,7 +143,7 @@ const paginated = (
         return {
           ...state,
           page: prevPage,
-          pageList: slicedList(prevPage, per, cacheList)
+          pageList: Immutable.fromJS(slicedList(prevPage, per, cacheList))
         };
 
       // Reset page to 1 as this existing page has lost its meaning due to the
@@ -154,8 +154,8 @@ const paginated = (
         return {
           ...state,
           filter: action.filter,
-          cacheList: newCache,
-          pageList: slicedList(1, per, newCache)
+          cacheList: Immutable.fromJS(newCache),
+          pageList: Immutable.fromJS(slicedList(1, per, newCache))
         };
       }
 
@@ -174,8 +174,8 @@ const paginated = (
           ...state,
           by: action.by,
           order: newOrder,
-          cacheList: newCache,
-          pageList: slicedList(page, per, newCache)
+          cacheList:Immutable.fromJS( newCache),
+          pageList: Immutable.fromJS(slicedList(page, per, newCache))
         };
       }
 
@@ -185,10 +185,10 @@ const paginated = (
 
         return {
           ...state,
-          list: newCache,
+          list: Immutable.fromJS(newCache),
           filter: action.filter,
-          cacheList: newCache,
-          pageList: slicedList(1, per, newCache),
+          cacheList: Immutable.fromJS(newCache),
+          pageList: Immutable.fromJS(slicedList(1, per, newCache)),
           total: totalPages(per, newCache)
         };
       }

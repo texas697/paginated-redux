@@ -157,7 +157,7 @@ var paginated = function paginated(reducer) {
       case GOTO_PAGE:
         return _extends({}, state, {
           page: action.page,
-          pageList: slicedList(action.page, per, cacheList)
+          pageList: _immutable2.default.fromJS(slicedList(action.page, per, cacheList))
         });
 
       // If the the action is fired whilst at the end of the list, swing around
@@ -168,7 +168,7 @@ var paginated = function paginated(reducer) {
 
         return _extends({}, state, {
           page: nextPage,
-          pageList: slicedList(nextPage, per, cacheList)
+          pageList: _immutable2.default.fromJS(slicedList(nextPage, per, cacheList))
         });
 
       // If the action is fired whilst already at the beginning of the list,
@@ -182,7 +182,7 @@ var paginated = function paginated(reducer) {
 
         return _extends({}, state, {
           page: prevPage,
-          pageList: slicedList(prevPage, per, cacheList)
+          pageList: _immutable2.default.fromJS(slicedList(prevPage, per, cacheList))
         });
 
       // Reset page to 1 as this existing page has lost its meaning due to the
@@ -193,8 +193,8 @@ var paginated = function paginated(reducer) {
 
           return _extends({}, state, {
             filter: action.filter,
-            cacheList: newCache,
-            pageList: slicedList(1, per, newCache)
+            cacheList: _immutable2.default.fromJS(newCache),
+            pageList: _immutable2.default.fromJS(slicedList(1, per, newCache))
           });
         }
 
@@ -211,8 +211,8 @@ var paginated = function paginated(reducer) {
           return _extends({}, state, {
             by: action.by,
             order: newOrder,
-            cacheList: _newCache,
-            pageList: slicedList(page, per, _newCache)
+            cacheList: _immutable2.default.fromJS(_newCache),
+            pageList: _immutable2.default.fromJS(slicedList(page, per, _newCache))
           });
         }
 
@@ -221,10 +221,10 @@ var paginated = function paginated(reducer) {
           var _newCache2 = sortedList(by, order, filteredList(action.filter, action.newCache));
 
           return _extends({}, state, {
-            list: _newCache2,
+            list: _immutable2.default.fromJS(_newCache2),
             filter: action.filter,
-            cacheList: _newCache2,
-            pageList: slicedList(1, per, _newCache2),
+            cacheList: _immutable2.default.fromJS(_newCache2),
+            pageList: _immutable2.default.fromJS(slicedList(1, per, _newCache2)),
             total: totalPages(per, _newCache2)
           });
         }
