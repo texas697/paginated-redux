@@ -200,9 +200,9 @@ const paginated = (
 
         return {
           ...state,
-          list: newList,
-          cacheList: newCache,
-          pageList: slicedList(page, per, cacheList),
+          list: Immutable.fromJS(newList),
+          cacheList: Immutable.fromJS(newCache),
+          pageList: Immutable.fromJS(slicedList(page, per, cacheList)),
           total: totalPages(per, newCache)
         };
       }

@@ -236,9 +236,9 @@ var paginated = function paginated(reducer) {
           var _newCache3 = sortedList(by, order, filteredList(filter, newList));
 
           return _extends({}, state, {
-            list: newList,
-            cacheList: _newCache3,
-            pageList: slicedList(page, per, cacheList),
+            list: _immutable2.default.fromJS(newList),
+            cacheList: _immutable2.default.fromJS(_newCache3),
+            pageList: _immutable2.default.fromJS(slicedList(page, per, cacheList)),
             total: totalPages(per, _newCache3)
           });
         }
