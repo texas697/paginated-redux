@@ -61,7 +61,9 @@
   "bugs": {
     "url": "https://github.com/robmclarty/paginated-redux/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "immutable": "^3.8.1"
+  },
   "description": "A higher order reducer (or transducer) that adds pagination, sorting, and filtering to a reducer of an array of objects.",
   "devDependencies": {
     "babel-cli": "6.8.0",

@@ -6,13 +6,19 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _immutable = require('immutable');
+
+var _immutable2 = _interopRequireDefault(_immutable);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 // Return a new array, a subset of `list`, which matches `filter`. Assumes an
 // array of objects and cyclers through each object, and looks at each property,
 // and compares all string properties to the value of the `filter` string,
 // returning only those which contain an exact match.
 var filteredList = function filteredList() {
   var filter = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-  var list = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var list = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _immutable2.default.List([]);
 
   if (filter) {
     return list.filter(function (el) {
@@ -30,7 +36,7 @@ var filteredList = function filteredList() {
 var sortedList = function sortedList() {
   var prop = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'name';
   var order = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'asc';
-  var list = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  var list = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _immutable2.default.List([]);
 
   return list.sort(function (compA, compB) {
     var a = compA;
@@ -58,9 +64,9 @@ var reversedList = function reversedList(list) {
 // Return the total number of pages that can be made from `list`.
 var totalPages = function totalPages() {
   var per = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
-  var list = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var list = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _immutable2.default.List([]);
 
-  var total = Math.ceil(list.length / per);
+  var total = Math.ceil(list.size / per);
 
   return total ? total : 0;
 };
@@ -70,12 +76,12 @@ var totalPages = function totalPages() {
 var slicedList = function slicedList() {
   var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
   var per = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
-  var list = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  var list = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _immutable2.default.List([]);
 
   var start = (page - 1) * per;
-  var end = per === 0 ? list.length : start + per;
+  var end = per === 0 ? list.size : start + per;
 
-  return end === list.length ? list.slice(start) : list.slice(start, end);
+  return end === list.size ? list.slice(start) : list.slice(start, end);
 };
 
 // params:
@@ -116,17 +122,17 @@ var paginated = function paginated(reducer) {
   // NOTE: cacheList is a temporary cached array of sorted + filtered elements
   // from the total list so that it doesn't need to be re-calculated each time
   // the pagedList function is called.
-  var initialState = {
+  var initialState = _immutable2.default.Map({
     list: reducer(undefined, {}),
-    pageList: [],
-    cacheList: sortedList(defaultSortBy, defaultSortOrder, filteredList(defaultFilter, reducer(undefined, {}))),
+    pageList: _immutable2.default.fromJS([]),
+    cacheList: _immutable2.default.fromJS(sortedList(defaultSortBy, defaultSortOrder, filteredList(defaultFilter, reducer(undefined, {})))),
     page: defaultPage,
     total: defaultTotal,
     per: defaultPer,
     order: defaultSortOrder,
     by: defaultSortBy,
     filter: defaultFilter
-  };
+  });
 
   return function () {
     var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;

@@ -1,8 +1,10 @@
+
+import Immutable from 'immutable'
 // Return a new array, a subset of `list`, which matches `filter`. Assumes an
 // array of objects and cyclers through each object, and looks at each property,
 // and compares all string properties to the value of the `filter` string,
 // returning only those which contain an exact match.
-const filteredList = (filter = '', list = []) => {
+const filteredList = (filter = '', list = Immutable.List([])) => {
   if (filter) {
     return list.filter((el) => {
       return Object.keys(el).some((prop) => {
@@ -18,7 +20,7 @@ const filteredList = (filter = '', list = []) => {
 
 // Return `list` sorted by `prop` in either ascending or decending order based
 // on the value of `order` (either 'asc' or 'desc').
-const sortedList = (prop = 'name', order = 'asc', list = []) => {
+const sortedList = (prop = 'name', order = 'asc', list = Immutable.List([])) => {
   return list.sort((compA, compB) => {
     let a = compA;
     let b = compB;
@@ -43,19 +45,19 @@ const reversedList = list => {
 }
 
 // Return the total number of pages that can be made from `list`.
-const totalPages = (per = 10, list = []) => {
-  const total = Math.ceil(list.length / per);
+const totalPages = (per = 10, list = Immutable.List([])) => {
+  const total = Math.ceil(list.size / per);
 
   return total ? total : 0;
 };
 
 // Return a slice of all `list` starting at `start` up to `per`
 // (or the length of list; whichever comes first).
-const slicedList = (page = 1, per = 10, list = []) => {
+const slicedList = (page = 1, per = 10, list = Immutable.List([])) => {
   const start = (page - 1) * per;
-  const end = per === 0 ? list.length : start + per;
+  const end = per === 0 ? list.size : start + per;
 
-  return end === list.length ?
+  return end === list.size ?
     list.slice(start) :
     list.slice(start, end);
 };
@@ -88,18 +90,17 @@ const paginated = (
   // NOTE: cacheList is a temporary cached array of sorted + filtered elements
   // from the total list so that it doesn't need to be re-calculated each time
   // the pagedList function is called.
-  const initialState = {
+  const initialState = Immutable.Map({
     list: reducer(undefined, {}),
-    pageList: [],
-    cacheList: sortedList(defaultSortBy, defaultSortOrder,
-      filteredList(defaultFilter, reducer(undefined, {}))),
+    pageList: Immutable.fromJS([]),
+    cacheList: Immutable.fromJS(sortedList(defaultSortBy, defaultSortOrder, filteredList(defaultFilter, reducer(undefined, {})))),
     page: defaultPage,
     total: defaultTotal,
     per: defaultPer,
     order: defaultSortOrder,
     by: defaultSortBy,
     filter: defaultFilter
-  };
+  });
 
   return (state = initialState, action) => {
     const { list, cacheList, page, total, per, order, by, filter } = state;
